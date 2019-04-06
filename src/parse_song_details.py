@@ -3,6 +3,7 @@ import collections
 import collections.abc
 import json
 import logging
+import os
 
 class Song:
 
@@ -54,7 +55,7 @@ class SongAttributeLines:
         return SongAttributesIterator(self.song_attribute_lines)
 
     def song_title(self):
-        return self.song_attribute_lines[0]
+        return self.song_attribute_lines[0].strip()
 
 class SongAttributesIterator(collections.abc.Iterator):
     def __init__(self, song_attribute_lines):
@@ -117,7 +118,9 @@ def read_file(file_name):
     return ''.join(lines)
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    _raw_song_details = read_file('/Users/hemanth/projects/personal/tadvidya/tadvidya/data/c3501.shtml.txt')
-    pipeline = SongTransformationPipeline("c0005.shtml.txt", _raw_song_details)
-    pipeline.execute_pipeline()
+    logging.basicConfig(level=logging.INFO)
+    song_files_dir = '/Users/hemanth/projects/personal/tadvidya/tadvidya/data/'
+    for file in os.listdir(song_files_dir):
+        _raw_song_details = read_file(os.path.join(song_files_dir, file))
+        pipeline = SongTransformationPipeline(file, _raw_song_details)
+        pipeline.execute_pipeline()
