@@ -10,13 +10,19 @@ import utils.RequestMarkerContext
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class SongResource(id: String, link: String, title: String, composer: String, language: String)
+case class SongResource(
+                         id: Option[String],
+                         link: Option[String],
+                         title: String,
+                         composer: String,
+                         language: String)
 
 object SongResource {
   /**
     * Mapping to read/write a SongResource out as a JSON value.
     */
-  implicit val format: Format[SongResource] = Json.format
+  implicit val songResourceWrites = Json.writes[SongResource]
+  implicit val songResourceReads = Json.reads[SongResource]
 }
 
 class SongController @Inject()(scc: SongControllerComponents) (implicit ec: ExecutionContext)
@@ -29,16 +35,20 @@ class SongController @Inject()(scc: SongControllerComponents) (implicit ec: Exec
 
   def SongAction: SongActionBuilder = scc.songActionBuilder
 
-  def index: Action[AnyContent] = SongAction.async { implicit request =>
-    logger.trace("Inside index")
+  def listSongs: Action[AnyContent] = SongAction.async { implicit request =>
+    logger.trace("Inside listSongs")
     val songs = Future {
-      Iterable(new SongResource("1", "http://localhost:9000/v1/songs/1",
+      Iterable(new SongResource(Some("1"), Some("http://localhost:9000/v1/songs/1"),
         "Thulasidhala", "Thyagaraja", "Telugu"))
     }
     songs.map {
       s => Ok(Json.toJson(s))
     }
   }
+
+//  def addSong: Action[AnyContent] = SongAction.async { implicit request =>
+//    logger.trace("Inside addSong")
+//  }
 
 }
 
