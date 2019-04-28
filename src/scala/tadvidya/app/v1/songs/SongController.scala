@@ -46,9 +46,16 @@ class SongController @Inject()(scc: SongControllerComponents) (implicit ec: Exec
     }
   }
 
-//  def addSong: Action[AnyContent] = SongAction.async { implicit request =>
-//    logger.trace("Inside addSong")
-//  }
+  def addSong: Action[AnyContent] = SongAction.async { implicit request =>
+    logger.trace("Inside addSong")
+    val songAsJson = request.body.asJson.get
+    val songResource = songAsJson.as[SongResource]
+    logger.info("Received song: $songResource")
+    val createdResource = songResource.copy(id=Some("2"), link=Some("http://localhost:9000/songs/2"))
+    Future {
+      Ok(Json.toJson(createdResource))
+    }
+  }
 
 }
 

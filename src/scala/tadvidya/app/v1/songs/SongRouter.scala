@@ -10,8 +10,8 @@ class SongRouter @Inject()(controller: SongController) extends SimpleRouter {
   override def routes: Routes = {
     case GET(p"/") =>
       controller.listSongs
-//    case POST(p"/") =>
-//      controller.addSong
+    case POST(p"/") =>
+      controller.addSong
   }
 
 }

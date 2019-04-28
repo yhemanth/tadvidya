@@ -22,6 +22,18 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
       val songs: Seq[SongResource] = Json.fromJson[Seq[SongResource]](contentAsJson(home)).get
       songs.length mustBe 1
     }
+
+    "add a song" in {
+      val request = FakeRequest(POST, "/v1/songs").
+        withJsonBody(Json.toJson[SongResource](
+          new SongResource(None, None, "Vaathapi", "Muthuswami Dikshitar", "Sanskrit"))).
+        withHeaders(HOST -> "localhost:9000").
+        withHeaders(CONTENT_TYPE -> "application/json").withCSRFToken
+
+      val home: Future[Result] = route(app, request).get
+      val song: SongResource = Json.fromJson[SongResource](contentAsJson(home)).get
+      song.title mustBe "Vaathapi"
+    }
   }
 
 }
