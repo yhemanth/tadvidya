@@ -18,6 +18,12 @@ libraryDependencies += "com.netaporter" %% "scala-uri" % "0.4.16"
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.2.1"
 
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.1" % Test
+libraryDependencies += "com.typesafe.play" %% "play-slick" %  "3.0.2"
+libraryDependencies += "com.typesafe.play" %% "play-slick-evolutions" % "3.0.2"
+
+libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1206-jdbc42"
+libraryDependencies += "com.google.code.findbugs" % "jsr305" % "1.3.9"
+
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "org.tadvidya.controllers._"

@@ -1,1 +1,1 @@
-->         /v1/songs               v1.songs.SongRouter
+->         /v1/songs               v1.songs.controllers.SongRouter

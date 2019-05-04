@@ -1,4 +1,4 @@
-package v1.songs
+package v1.songs.controllers
 
 import javax.inject.Inject
 import play.api.routing.Router.Routes
