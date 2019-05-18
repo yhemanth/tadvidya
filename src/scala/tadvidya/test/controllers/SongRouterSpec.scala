@@ -44,6 +44,18 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
       song.title mustBe "Vaathapi"
       song.id.get mustBe 1L
     }
+
+    "search for a song by title" in {
+      val request = FakeRequest(GET, "/v1/songs/search?q=Muthu").
+        withHeaders(HOST -> "localhost:9000").withCSRFToken
+      val home:Future[Result] = route(app, request).get
+
+      val songs: Seq[Song] = Json.fromJson[Seq[Song]](contentAsJson(home)).get
+      songs.length mustBe 3
+      songs.foreach(s => {
+        s.title.contains("Muthu") mustBe true
+      })
+    }
   }
 
 }
@@ -56,6 +68,12 @@ class MockSongRepository @Inject()(@NamedDatabase("tadvidya") dbConfigProvider: 
 
   override def create(title: String, composer: String, language: String): Future[Song] = Future {
     new Song(Some(1), title, composer, language)
+  }
+
+  override def find(query: String): Future[Seq[Song]] = Future {
+    Seq(new Song(Some(1), s"prefix${query}", "composer", "language"),
+      new Song(Some(2), s"${query}suffix", "composer", "language"),
+      new Song(Some(2), s"prefix${query}suffix", "composer", "language"))
   }
 }
 

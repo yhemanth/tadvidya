@@ -39,4 +39,9 @@ class SongRepository @Inject() (@NamedDatabase("tadvidya") dbConfigProvider: Dat
   def list(): Future[Seq[Song]] = db.run {
     songs.result
   }
+
+  def find(query: String): Future[Seq[Song]] = db.run {
+    songs.filter(_.title like s"%$query%").result
+  }
+
 }

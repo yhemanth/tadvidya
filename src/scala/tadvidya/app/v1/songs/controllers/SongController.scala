@@ -39,6 +39,12 @@ class SongController @Inject()(repo: SongRepository,
     }
   }
 
+  def findSongs(query: String): Handler = SongAction.async { implicit request =>
+    repo.find(query).map { songs
+      => Ok(Json.toJson(songs))
+    }
+  }
+
 }
 
 /**
