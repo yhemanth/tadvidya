@@ -4,13 +4,14 @@ import collections.abc
 import json
 import logging
 import os
+import requests
 
 class Song:
 
     def __init__(self, title, composer='', language=''):
-        self.title = title
-        self.composer = composer
-        self.language = language
+        self.title = title.title()
+        self.composer = composer.title() if composer else "Unknown"
+        self.language = language.capitalize() if language else "Unknown"
 
     def __str__(self):
         return str(json.dumps(self.__dict__))
@@ -96,13 +97,20 @@ class SongBuilderStep(PipelineStep):
             song_attributes[attribute_name] = attribute_value
         song = Song(song_attribute_lines.song_title(), **song_attributes)
         logging.info("Song: {}".format(song))
+        return PipelineStepContext(context.id, song)
+
+class SongAdderStep(PipelineStep):
+    url = "http://localhost:9000/v1/songs"
+    def execute(self, context):
+        response = requests.post(self.url, json=json.loads(str(context.item)))
+        logging.info("Posted content and got response: {}".format(response.status_code))
 
 
 class SongTransformationPipeline:
     def __init__(self, song_id, raw_song_details):
         self.song_id = song_id
         self.init_value = raw_song_details
-        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep()]
+        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep()]
 
     def execute_pipeline(self):
         context = PipelineStepContext(self.song_id, self.init_value)
