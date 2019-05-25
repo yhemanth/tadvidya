@@ -39,7 +39,7 @@ class App extends Component {
     // const editItem = this.state.editItem;
 
     const listSongs = songs.map((song) =>
-        <tr key={song.id} onClick={() => this.onSelect(song.id)}>
+        <tr>
           <td>{song.title}</td>
           <td>{song.composer}</td>
           <td>{song.language}</td>
