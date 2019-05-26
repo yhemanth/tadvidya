@@ -4,6 +4,7 @@ import './App.css';
 // import NewItem from './new-item';
 // import EditItem from './edit-item';
 import SongService from './shared/song-service';
+import Search from './search'
 
 class App extends Component {
 
@@ -47,23 +48,29 @@ class App extends Component {
     );
 
     return (
-        <table>
-          <tr>
-            <th>Song Title</th>
-            <th>Composer</th>
-            <th>Language</th>
-          </tr>
+        <div>
+          <Search/>
+          <br/>
+          <table>
+            <tr>
+              <th>Song Title</th>
+              <th>Composer</th>
+              <th>Language</th>
+            </tr>
 
-          {listSongs}
-          {/*<br/>*/}
-          {/*<button type="button" name="button" onClick={() => this.onNewItem()}>New Item</button>*/}
-          {/*<br/>*/}
-          {/*{newItem && <NewItem onSubmit={this.onCreateItem} onCancel={this.onCancel}/>}*/}
-          {/*{showDetails && selectedSong && <ItemDetails item={selectedSong} onEdit={this.onEditItem}  onDelete={this.onDeleteItem} />}*/}
-          {/*{editItem && selectedSong && <EditItem onSubmit={this.onUpdateItem} onCancel={this.onCancelEdit} item={selectedSong} />}*/}
-        </table>
+            {listSongs}
+            {/*<br/>*/}
+            {/*<button type="button" name="button" onClick={() => this.onNewItem()}>New Item</button>*/}
+            {/*<br/>*/}
+            {/*{newItem && <NewItem onSubmit={this.onCreateItem} onCancel={this.onCancel}/>}*/}
+            {/*{showDetails && selectedSong && <ItemDetails item={selectedSong} onEdit={this.onEditItem}  onDelete={this.onDeleteItem} />}*/}
+            {/*{editItem && selectedSong && <EditItem onSubmit={this.onUpdateItem} onCancel={this.onCancelEdit} item={selectedSong} />}*/}
+          </table>
+        </div>
     );
   }
+
+
 
   getSongs() {
     this.songService.retrieveSongs().then(songs => {
