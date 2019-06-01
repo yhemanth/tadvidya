@@ -38,7 +38,9 @@ class App extends Component {
 
     const listSongs = songs.map((song) =>
         <tr key={song.id}>
-          <td>{song.title}</td>
+          <td>
+            <a href={'http://localhost:9000/v1/songs/'+song.id}>{song.title}</a>
+          </td>
           <td>{song.composer}</td>
           <td>{song.language}</td>
         </tr>

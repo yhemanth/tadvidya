@@ -56,6 +56,25 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
         s.title.contains("Muthu") mustBe true
       })
     }
+
+    "get a song by id" in {
+      val request = FakeRequest(GET, "/v1/songs/10").
+        withHeaders(HOST -> "localhost:9000").withCSRFToken
+
+      val home: Future[Result] = route(app, request).get
+
+      val song: Song = Json.fromJson[Song](contentAsJson(home)).get
+      song.title mustBe "Thulasidhala"
+      song.id.get mustBe 10
+    }
+
+    "non existent song should give a 404" in {
+      val request = FakeRequest(GET, "/v1/songs/0").
+        withHeaders(HOST -> "localhost:9000").withCSRFToken
+
+      val home: Future[Result] = route(app, request).get
+      status(home) mustBe 404
+    }
   }
 
 }
@@ -64,6 +83,13 @@ class MockSongRepository @Inject()(@NamedDatabase("tadvidya") dbConfigProvider: 
                                   (implicit ec: ExecutionContext) extends SongRepository(dbConfigProvider) {
   override def list(): Future[Seq[Song]] = Future {
     Seq(new Song(Some(1), "Thulasidhala", "Thyagaraja", "Telugu"))
+  }
+
+  override def findById(id: Long): Future[Option[Song]] = Future {
+    id match {
+      case 0 => None
+      case _ => Some(new Song(Some(id), "Thulasidhala", "Thyagaraja", "Telugu"))
+    }
   }
 
   override def create(title: String, composer: String, language: String): Future[Song] = Future {

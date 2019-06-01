@@ -12,6 +12,8 @@ class SongRouter @Inject()(controller: SongController) extends SimpleRouter {
       controller.listSongs
     case GET(p"/search" ? q"q=$query") =>
       controller.findSongs(query)
+    case GET(p"/$id") =>
+      controller.findSongById(id.toLong)
     case POST(p"/") =>
       controller.addSong
   }

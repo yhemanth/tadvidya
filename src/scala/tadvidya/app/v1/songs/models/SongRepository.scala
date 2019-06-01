@@ -10,7 +10,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SongRepository @Inject() (@NamedDatabase("tadvidya") dbConfigProvider: DatabaseConfigProvider)
                                (implicit ec: ExecutionContext) {
-
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
 
   import dbConfig._
@@ -35,6 +34,9 @@ class SongRepository @Inject() (@NamedDatabase("tadvidya") dbConfigProvider: Dat
                                       songProps._1, songProps._2, songProps._3))
       ) += ((title, composer, language))
   }
+
+  def findById(id: Long): Future[Option[Song]] =
+    db.run(songs.filter(_.id === id).result.headOption)
 
   def list(): Future[Seq[Song]] = db.run {
     songs.result

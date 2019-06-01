@@ -15,7 +15,6 @@ class SongController @Inject()(repo: SongRepository,
                                scc: SongControllerComponents) (implicit ec: ExecutionContext)
                               extends BaseController
                               with RequestMarkerContext {
-
   override protected def controllerComponents: ControllerComponents = scc
 
   val logger = Logger(this.getClass)
@@ -28,6 +27,14 @@ class SongController @Inject()(repo: SongRepository,
       => Ok(Json.toJson(songs))
     }
   }
+
+  def findSongById(id: Long): Action[AnyContent] = SongAction.async { implicit request =>
+    repo.findById(id).map {
+      case Some(song) => Ok(Json.toJson(song))
+      case None => NotFound(s"No song with ID $id")
+    }
+  }
+
 
   def addSong: Action[AnyContent] = SongAction.async { implicit request =>
     logger.trace("Inside addSong")
