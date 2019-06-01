@@ -1,10 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-// import ItemDetails from './item-details';
-// import NewItem from './new-item';
-// import EditItem from './edit-item';
 import SongService from './shared/song-service';
-import Search from './search'
 
 class App extends Component {
 
@@ -12,18 +8,13 @@ class App extends Component {
     super(props);
     this.songService = new SongService();
     this.onSelect = this.onSelect.bind(this);
-    // this.onNewItem = this.onNewItem.bind(this);
-    // this.onEditItem = this.onEditItem.bind(this);
-    // this.onCancel = this.onCancel.bind(this);
-    // this.onCancelEdit = this.onCancelEdit.bind(this);
-    // this.onCreateItem = this.onCreateItem.bind(this);
-    // this.onUpdateItem = this.onUpdateItem.bind(this);
-    // this.onDeleteItem = this.onDeleteItem.bind(this);
+    this.onSearch = this.onSearch.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+
     this.state = {
       showDetails: false,
-      // editItem: false,
       selectedSong: null,
-      // newItem: null
+      searchString: ''
     }
   }
 
@@ -31,16 +22,22 @@ class App extends Component {
     this.getSongs();
   }
 
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({
+      [name]: value
+    });
+  }
+
   render() {
     const songs = this.state.songs;
-    if(!songs) return null;
-    // const showDetails = this.state.showDetails;
-    // const selectedSong = this.state.selectedSong;
-    // const newItem = this.state.newItem;
-    // const editItem = this.state.editItem;
+    if (!songs)
+      return null;
 
     const listSongs = songs.map((song) =>
-        <tr>
+        <tr key={song.id}>
           <td>{song.title}</td>
           <td>{song.composer}</td>
           <td>{song.language}</td>
@@ -49,22 +46,25 @@ class App extends Component {
 
     return (
         <div>
-          <Search/>
-          <br/>
-          <table>
-            <tr>
-              <th>Song Title</th>
-              <th>Composer</th>
-              <th>Language</th>
-            </tr>
 
-            {listSongs}
-            {/*<br/>*/}
-            {/*<button type="button" name="button" onClick={() => this.onNewItem()}>New Item</button>*/}
-            {/*<br/>*/}
-            {/*{newItem && <NewItem onSubmit={this.onCreateItem} onCancel={this.onCancel}/>}*/}
-            {/*{showDetails && selectedSong && <ItemDetails item={selectedSong} onEdit={this.onEditItem}  onDelete={this.onDeleteItem} />}*/}
-            {/*{editItem && selectedSong && <EditItem onSubmit={this.onUpdateItem} onCancel={this.onCancelEdit} item={selectedSong} />}*/}
+          <div className="search-panel">
+            <label className="search-string">Find Songs:
+              <input value={this.state.searchString} size="100" maxLength="100" name="searchString" required onChange={this.handleInputChange} placeholder="song title" />
+            </label>
+            <button onClick={() => this.onSearch()}>Go</button>
+          </div>
+
+          <br/>
+
+          <table>
+            <tbody>
+              <tr>
+                <th>Song Title</th>
+                <th>Composer</th>
+                <th>Language</th>
+              </tr>
+              {listSongs}
+            </tbody>
           </table>
         </div>
     );
@@ -79,6 +79,13 @@ class App extends Component {
     );
   }
 
+  onSearch() {
+    console.log(this.state.searchString)
+    this.songService.searchForSongs(this.state.searchString).then(songs => {
+      this.setState({songs: songs})
+    })
+  }
+
   onSelect(id) {
     this.clearState();
     this.songService.getSong(id).then(song => {
@@ -89,50 +96,7 @@ class App extends Component {
         }
     );
   }
-  // onCancel() {
-  //   this.clearState();
-  // }
-  // onNewItem() {
-  //   this.clearState();
-  //   this.setState({
-  //     newItem: true
-  //   });
-  // }
-  // onEditItem() {
-  //   this.setState({
-  //     showDetails: false,
-  //     editItem: true,
-  //     newItem: null
-  //   });
-  // }
-  // onCancelEdit() {
-  //   this.setState({
-  //     showDetails: true,
-  //     editItem: false,
-  //     newItem: null
-  //   });
-  // }
-  // onUpdateItem(item) {
-  //   this.clearState();
-  //   this.songService.updateItem(item).then(item => {
-  //         this.getSongs();
-  //       }
-  //   );
-  // }
-  // onCreateItem(newItem) {
-  //   this.clearState();
-  //   this.songService.createItem(newItem).then(item => {
-  //         this.getSongs();
-  //       }
-  //   );
-  // }
-  // onDeleteItem(itemLink) {
-  //   this.clearState();
-  //   this.songService.deleteItem(itemLink).then(res => {
-  //         this.getSongs();
-  //       }
-  //   );
-  // }
+
   clearState() {
     this.setState({
       showDetails: false,
