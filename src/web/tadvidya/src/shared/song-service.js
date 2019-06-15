@@ -61,12 +61,19 @@ class SongService {
     }
 
     async getSong(id) {
-        for (var i = 0; i < this.songs.length; i++) {
-            if (this.songs[i].id === id) {
-                return Promise.resolve(this.songs[i])
-            }
-        }
-        return null
+        return fetch (this.config.SONG_COLLECTION_URL+"/"+id, {
+            method: 'GET'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    this.handleResponseError(response);
+                }
+                return response.json();
+            })
+            .then(json => {
+                console.log(json);
+                return json;
+            })
     }
 
     handleResponseError(response) {
