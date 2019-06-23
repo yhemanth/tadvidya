@@ -8,7 +8,7 @@ import requests
 
 class Song:
 
-    def __init__(self, title, composer='', language='', raagam='', taalam='', lyrics=[]):
+    def __init__(self, title, composer='', language='', raagam='', taalam='', lyrics=''):
         self.title = title.title()
         self.composer = composer.title() if composer else "Unknown"
         self.language = language.capitalize() if language else "Unknown"
@@ -93,8 +93,9 @@ class SongAttributesIterator(collections.abc.Iterator):
             lyrics.append(self.song_attribute_lines[self.current_index])
             self.current_index += 1
         self.extracted_lyrics = True
-        logging.debug('lyrics: ' + str(lyrics))
-        return 'lyrics', lyrics
+        lyrics_str = '+'.join(lyrics)
+        logging.debug('lyrics: ' + str(lyrics_str))
+        return 'lyrics', lyrics_str
 
     def __end_of_lyrics(self):
         line = self.song_attribute_lines[self.current_index]
