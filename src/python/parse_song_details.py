@@ -8,10 +8,13 @@ import requests
 
 class Song:
 
-    def __init__(self, title, composer='', language=''):
+    def __init__(self, title, composer='', language='', raagam='', taalam='', lyrics=[]):
         self.title = title.title()
         self.composer = composer.title() if composer else "Unknown"
         self.language = language.capitalize() if language else "Unknown"
+        self.raagam = raagam
+        self.taalam = taalam
+        self.lyrics = lyrics
 
     def __str__(self):
         return str(json.dumps(self.__dict__))
@@ -61,19 +64,42 @@ class SongAttributeLines:
 class SongAttributesIterator(collections.abc.Iterator):
     def __init__(self, song_attribute_lines):
         self.song_attribute_lines = song_attribute_lines
-        self.current_index = 1 # First line is title of song.
-        self.known_attributes = ['language', 'composer']
+        self.current_index = 1 # Index 0 is title of song.
+        self.song_metadata_attributes = ['raagam', 'taalam', 'composer', 'language']
+        self.found_all_metadata_attributes = False
+        self.extracted_lyrics = False
 
     def __next__(self):
         while self.current_index < len(self.song_attribute_lines):
-            maybe_attribute = self.song_attribute_lines[self.current_index]
+            maybe_attribute = self.song_attribute_lines[self.current_index].strip().lower()
             self.current_index += 1
             attribute_parts = maybe_attribute.split(':')
             attribute_name = attribute_parts[0].lower()
-            if attribute_name and attribute_name in self.known_attributes:
+            if attribute_name and attribute_name in self.song_metadata_attributes:
                 logging.debug("found attribute_name {} and value {}".format(attribute_name, attribute_parts[1].strip()))
+                if attribute_name == 'language':
+                    self.found_all_metadata_attributes = True
                 return attribute_name, attribute_parts[1].strip()
+            elif (self.__maybe_start_of_lyrics(maybe_attribute)) and not self.extracted_lyrics:
+                return self.__extract_lyrics(maybe_attribute)
         raise StopIteration
+
+    def __maybe_start_of_lyrics(self, maybe_attribute):
+        return maybe_attribute.startswith('pallavi') or self.found_all_metadata_attributes
+
+    def __extract_lyrics(self, first_line_of_lyrics):
+        lyrics = [first_line_of_lyrics]
+        while self.current_index < len(self.song_attribute_lines) and not self.__end_of_lyrics():
+            lyrics.append(self.song_attribute_lines[self.current_index])
+            self.current_index += 1
+        self.extracted_lyrics = True
+        logging.debug('lyrics: ' + str(lyrics))
+        return 'lyrics', lyrics
+
+    def __end_of_lyrics(self):
+        line = self.song_attribute_lines[self.current_index]
+        is_end = line.lower().startswith('meaning') or line.lower().startswith('first')
+        return is_end
 
 
 class SongAttributeLinesBuilderStep(PipelineStep):
@@ -110,7 +136,8 @@ class SongTransformationPipeline:
     def __init__(self, song_id, raw_song_details):
         self.song_id = song_id
         self.init_value = raw_song_details
-        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep()]
+        # self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep()]
+        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep()]
 
     def execute_pipeline(self):
         context = PipelineStepContext(self.song_id, self.init_value)
@@ -127,7 +154,8 @@ def read_file(file_name):
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    song_files_dir = '/Users/hemanth/projects/personal/tadvidya/tadvidya/data/'
+    song_files_dir = '/Users/hemanth/projects/personal/tadvidya/tadvidya/data'
+    # song_files_dir = '/Users/hemanth/temp/songs'
     for file in os.listdir(song_files_dir):
         _raw_song_details = read_file(os.path.join(song_files_dir, file))
         pipeline = SongTransformationPipeline(file, _raw_song_details)
