@@ -1,9 +1,9 @@
 class SongService {
     constructor() {
         this.songSummaries = [
-            {"id":843,"title":"Rama Ni Samaanamevaru","composer":"Tyaagaraaja","language":"Telugu"},
-            {"id":981,"title":"Paahi Rama Rama","composer":"Tyaagaraaja","language":"Telugu"},
-            {"id":988,"title":"Raamaa Raamaa Ramachandra","composer":"Tyaagaraaja","language":"Telugu"}
+            {"id":843,"title":"Rama Ni Samaanamevaru","raagam":"kharaharapriyaa","composer":"Tyaagaraaja"},
+            {"id":981,"title":"Paahi Rama Rama","raagam":"kharaharapriyaa","composer":"Tyaagaraaja"},
+            {"id":988,"title":"Raamaa Raamaa Ramachandra","raagam":"ghanta","composer":"Tyaagaraaja"}
         ]
         this.songs = [
             {"id":843,"title":"Rama Ni Samaanamevaru","composer":"Tyaagaraaja","language":"Telugu",

@@ -44,11 +44,12 @@ class SongRepository @Inject() (@NamedDatabase("tadvidya") dbConfigProvider: Dat
     db.run(songs.filter(_.id === id).result.headOption)
 
   def list(): Future[Seq[SongSummary]] = db.run {
-    songs.result.map(_.map(s => SongSummary(s.id, s.title, s.composer, s.language)))
+    songs.sortBy(_.title).result.map(_.map(s => SongSummary(s.id, s.title, s.raagam.getOrElse("Unknown"), s.composer)))
   }
 
   def find(query: String): Future[Seq[SongSummary]] = db.run {
-    songs.filter(_.title like s"%$query%").result.map(_.map(s => SongSummary(s.id, s.title, s.composer, s.language)))
+    songs.filter(_.title like s"%$query%").sortBy(_.title).result.map(_.map(s =>
+      SongSummary(s.id, s.title, s.raagam.getOrElse("Unknown"), s.composer)))
   }
 
 }

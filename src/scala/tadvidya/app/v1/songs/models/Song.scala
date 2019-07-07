@@ -11,7 +11,7 @@ case class Song (id: Option[Long],
                  lyrics: Option[String]
                 )
 
-case class SongSummary(id: Option[Long], title: String, composer: String, language: String)
+case class SongSummary(id: Option[Long], title: String, raagam: String, composer: String)
 
 object Song {
   implicit val songWrites = Json.writes[Song]

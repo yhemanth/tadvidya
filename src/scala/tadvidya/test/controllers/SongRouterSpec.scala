@@ -28,8 +28,9 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
       val request = FakeRequest(GET, "/v1/songs").withHeaders(HOST -> "localhost:9000").withCSRFToken
       val home:Future[Result] = route(app, request).get
 
-      val songs: Seq[Song] = Json.fromJson[Seq[Song]](contentAsJson(home)).get
+      val songs: Seq[SongSummary] = Json.fromJson[Seq[SongSummary]](contentAsJson(home)).get
       songs.length mustBe 1
+      songs(0) mustBe new SongSummary(Some(1), "Thulasidhala", "maayamalavagowla", "Thyagaraaja")
     }
 
     "add a song" in {
@@ -52,7 +53,7 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
         withHeaders(HOST -> "localhost:9000").withCSRFToken
       val home:Future[Result] = route(app, request).get
 
-      val songs: Seq[Song] = Json.fromJson[Seq[Song]](contentAsJson(home)).get
+      val songs: Seq[SongSummary] = Json.fromJson[Seq[SongSummary]](contentAsJson(home)).get
       songs.length mustBe 3
       songs.foreach(s => {
         s.title.contains("Rama") mustBe true
@@ -84,7 +85,7 @@ class SongRouterSpec extends PlaySpec with GuiceOneAppPerTest {
 class MockSongRepository @Inject()(@NamedDatabase("tadvidya") dbConfigProvider: DatabaseConfigProvider)
                                   (implicit ec: ExecutionContext) extends SongRepository(dbConfigProvider) {
   override def list(): Future[Seq[SongSummary]] = Future {
-    Seq(new SongSummary(Some(1), "Thulasidhala", "Thyagaraja", "Telugu"))
+    Seq(new SongSummary(Some(1), "Thulasidhala", "maayamalavagowla", "Thyagaraaja"))
   }
 
   override def findById(id: Long): Future[Option[Song]] = Future {
@@ -102,9 +103,9 @@ class MockSongRepository @Inject()(@NamedDatabase("tadvidya") dbConfigProvider: 
   }
 
   override def find(query: String): Future[Seq[SongSummary]] = Future {
-    Seq(new SongSummary(Some(1), s"prefix${query}", "composer", "language"),
-      new SongSummary(Some(2), s"${query}suffix", "composer", "language"),
-      new SongSummary(Some(2), s"prefix${query}suffix", "composer", "language"))
+    Seq(new SongSummary(Some(1), s"prefix${query}", "raagam", "composer"),
+      new SongSummary(Some(2), s"prefix${query}suffix", "raagam", "composer"),
+      new SongSummary(Some(3), s"${query}suffix", "raagam", "composer"))
   }
 }
 

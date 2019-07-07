@@ -91,8 +91,8 @@ class Home extends Component {
                 <td>
                     <a href={'/songs/'+song.id}>{song.title}</a>
                 </td>
+                <td>{song.raagam}</td>
                 <td>{song.composer}</td>
-                <td>{song.language}</td>
             </tr>
         );
 
@@ -117,8 +117,8 @@ class Home extends Component {
                     <tbody>
                     <tr>
                         <th>Song Title</th>
+                        <th>Raagam</th>
                         <th>Composer</th>
-                        <th>Language</th>
                     </tr>
                     {listSongs}
                     </tbody>
