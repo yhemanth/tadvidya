@@ -168,6 +168,15 @@ class SongDetails extends Component {
                     Song Title: {sd.title}
                 </h2>
                 <table>
+                    <tbody>
+                    <tr>
+                        <td>Raagam</td>
+                        <td>{sd.raagam}</td>
+                    </tr>
+                    <tr>
+                        <td>Taalam</td>
+                        <td>{sd.taalam}</td>
+                    </tr>
                     <tr>
                         <td>Song Composer</td>
                         <td>{sd.composer}</td>
@@ -176,9 +185,22 @@ class SongDetails extends Component {
                         <td>Language</td>
                         <td>{sd.language}</td>
                     </tr>
+                    </tbody>
                 </table>
+                <h3>
+                    Lyrics:
+                </h3>
+                <div>
+                    {this.breakIntoLines(sd.lyrics)}
+                </div>
             </div>
         );
+    }
+
+    breakIntoLines(lyrics) {
+        return lyrics.split('+').map((line) =>
+            <p>{line}<br/></p>
+        )
     }
 
 }

@@ -137,8 +137,7 @@ class SongTransformationPipeline:
     def __init__(self, song_id, raw_song_details):
         self.song_id = song_id
         self.init_value = raw_song_details
-        # self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep()]
-        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep()]
+        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep()]
 
     def execute_pipeline(self):
         context = PipelineStepContext(self.song_id, self.init_value)

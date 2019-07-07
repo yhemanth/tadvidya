@@ -18,7 +18,7 @@ class SongService {
                 return response.json();
             })
             .then(json => {
-                console.log("Retrieved songs:");
+                console.log("Retrieved songSummaries:");
                 console.log(json);
                 const songs = [];
                 const songArray = json;
@@ -45,7 +45,7 @@ class SongService {
                 return response.json();
             })
             .then(json => {
-                console.log("Retrieved songs:");
+                console.log("Retrieved songSummaries:");
                 console.log(json);
                 const songs = [];
                 const songArray = json;

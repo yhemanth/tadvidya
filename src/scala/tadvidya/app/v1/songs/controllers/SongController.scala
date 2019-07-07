@@ -41,7 +41,7 @@ class SongController @Inject()(repo: SongRepository,
     val songAsJson = request.body.asJson.get
     val song = songAsJson.as[Song]
     logger.info("Received song: $song")
-    repo.create(song.title, song.composer, song.language).map {
+    repo.create(song.title, song.composer, song.language, song.raagam, song.taalam, song.lyrics).map {
       s => Ok(Json.toJson(s))
     }
   }
