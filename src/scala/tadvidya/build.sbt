@@ -24,6 +24,7 @@ libraryDependencies += "com.typesafe.play" %% "play-slick-evolutions" % "3.0.2"
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1206-jdbc42"
 libraryDependencies += "com.google.code.findbugs" % "jsr305" % "1.3.9"
 
+maintainer := "yhemanth@gmail.com"
 
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "org.tadvidya.controllers._"

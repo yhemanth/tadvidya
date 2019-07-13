@@ -1,2 +1,4 @@
 data
 .idea
+installer
+src/web/tadvidya/tadvidya-web-*.tar.gz
