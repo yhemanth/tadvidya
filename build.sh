@@ -25,6 +25,13 @@ install_scala() {
   popd
 }
 
+containerize_scala() {
+  pushd installer/scala
+  cp ../../src/scala/tadvidya/Dockerfile .
+  docker build -t tadvidya:${VERSION} .
+  popd
+}
+
 clean_web() {
   pushd src/web/tadvidya/
   rm -rf build
@@ -62,9 +69,14 @@ install_all() {
   install_web
 }
 
+containerize_all() {
+  containerize_scala
+}
+
 if [ $# -gt 0 ] && [ "$1" = "clean" ]
 then
   clean_all
 fi
 compile_all
 install_all
+containerize_all
