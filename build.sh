@@ -52,6 +52,12 @@ install_web() {
   popd
 }
 
+containerize_web() {
+  pushd installer/web
+  cp ../../src/web/tadvidya/Dockerfile .
+  docker build -t tadvidya-web:${VERSION} .
+}
+
 clean_all() {
   rm -rf installer/
   clean_scala
@@ -71,6 +77,7 @@ install_all() {
 
 containerize_all() {
   containerize_scala
+  containerize_web
 }
 
 if [ $# -gt 0 ] && [ "$1" = "clean" ]
