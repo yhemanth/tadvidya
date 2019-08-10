@@ -1,0 +1,12 @@
+version: '3'
+services:
+    app:
+        image: tadvidya:1.0-SNAPSHOT
+        ports:
+        - 9000:9000
+        environment:
+        - EXTERNAL_JDBC_URL=jdbc:postgresql://192.168.1.8:5432/tadvidya?currentSchema=tadvidya
+    web:
+        image: tadvidya-web:1.0-SNAPSHOT
+        ports:
+        - 5000:5000
