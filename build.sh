@@ -56,6 +56,22 @@ containerize_web() {
   pushd installer/web
   cp ../../src/web/tadvidya/Dockerfile .
   docker build -t tadvidya-web:${VERSION} .
+  popd
+}
+
+install_init_scripts() {
+  pushd installer/init_scripts
+  cp ../../src/python/parse_song_details.py .
+  cp ../../src/python/requirements.txt .
+  cp -R ../../data .
+  popd
+}
+
+containerize_init_scripts() {
+  pushd installer/init_scripts
+  cp ../../src/python/Dockerfile .
+  docker build -t tadvidya-init:${VERSION} .
+  popd
 }
 
 clean_all() {
@@ -70,14 +86,16 @@ compile_all() {
 }
 
 install_all() {
-  mkdir -p installer/scala installer/web
+  mkdir -p installer/scala installer/web installer/init_scripts
   install_scala
   install_web
+  install_init_scripts
 }
 
 containerize_all() {
   containerize_scala
   containerize_web
+  containerize_init_scripts
 }
 
 if [ $# -gt 0 ] && [ "$1" = "clean" ]
