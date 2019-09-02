@@ -129,19 +129,19 @@ class SongBuilderStep(PipelineStep):
 
 class SongAdderStep(PipelineStep):
 
-    def __init__(self, api_url):
-        self.url = api_url
+    def __init__(self, tadvidya_api_server):
+        self.tadvidya_api_url = 'http://%s/v1/songs' % tadvidya_api_server
 
     def execute(self, context):
-        response = requests.post(self.url, json=json.loads(str(context.item)))
+        response = requests.post(self.tadvidya_api_url, json=json.loads(str(context.item)))
         logging.info("Posted content and got response: {}".format(response.status_code))
 
 
 class SongTransformationPipeline:
-    def __init__(self, song_id, raw_song_details, tadvidya_api_url):
+    def __init__(self, song_id, raw_song_details, tadvidya_api_server):
         self.song_id = song_id
         self.init_value = raw_song_details
-        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep(tadvidya_api_url)]
+        self.steps = [SongDetailExtractionStep(), SongAttributeLinesBuilderStep(), SongBuilderStep(), SongAdderStep(tadvidya_api_server)]
 
     def execute_pipeline(self):
         context = PipelineStepContext(self.song_id, self.init_value)
@@ -161,11 +161,11 @@ if __name__ == '__main__':
     song_files_dir = '/Users/hemanth/projects/personal/tadvidya/tadvidya/data'
     if len(sys.argv) > 1:
         song_files_dir = sys.argv[1]
-    tadvidya_api_url = 'http://localhost:9000/v1/songs'
+    tadvidya_api_server = 'localhost:9000'
     if len(sys.argv) > 2:
-        tadvidya_api_url = sys.argv[2]
+        tadvidya_api_server = sys.argv[2]
     # song_files_dir = '/Users/hemanth/temp/songs'
     for file in os.listdir(song_files_dir):
         _raw_song_details = read_file(os.path.join(song_files_dir, file))
-        pipeline = SongTransformationPipeline(file, _raw_song_details, tadvidya_api_url)
+        pipeline = SongTransformationPipeline(file, _raw_song_details, tadvidya_api_server)
         pipeline.execute_pipeline()
